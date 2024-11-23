@@ -27,7 +27,7 @@ export class Plan {
   @CreateDateColumn()
   created_at: Date;
 
-  @Column({ type: 'enum', enum: Priority, nullable: false })
+  @Column({ type: 'varchar', enum: Priority, nullable: false })
   priority: Priority;
 
   @Column({ default: false })
