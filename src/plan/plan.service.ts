@@ -44,7 +44,18 @@ export class PlanService {
     plan.title = request.title;
     plan.text = request.text;
 
-    return await this.planRepository.save(plan);
+    const updatedPlan = await this.planRepository.save(plan);
+
+    const childPlans: Plan[] = await this.planRepository.find({
+      where: { parentPlan: { id: plan.id } },
+    });
+
+    for (const child of childPlans) {
+      child.color = plan.color;
+      await this.planRepository.save(child);
+    }
+
+    return updatedPlan;
   }
 
   async findAllPlans(): Promise<Plan[]> {
