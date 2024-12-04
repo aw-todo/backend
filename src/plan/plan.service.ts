@@ -45,9 +45,7 @@ export class PlanService {
 
     plan.color = request.color;
     plan.title = request.title;
-    if (request.text) {
-      plan.text = request.text;
-    }
+    plan.text = request.text;
 
     const updatedPlan = await this.planRepository.save(plan);
 
@@ -88,9 +86,7 @@ export class PlanService {
     childPlan.parentPlan = parentPlan;
     childPlan.color = parentPlan.color;
     childPlan.title = request.title;
-    if (request.text) {
-      childPlan.text = request.text;
-    }
+    childPlan.text = request.text;
 
     await this.planRepository.save(childPlan);
   }
