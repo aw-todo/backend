@@ -114,7 +114,7 @@ export class PlanService {
         parentPlan: IsNull(),
       },
       relations: ['parentPlan'],
-      order: { startDate: 'ASC' },
+      order: { created_at: 'ASC' },
     });
 
     return await Promise.all(
@@ -150,7 +150,7 @@ export class PlanService {
         parentPlan: Not(IsNull()),
       },
       relations: ['parentPlan'],
-      order: { startDate: 'ASC' },
+      order: { created_at: 'ASC' },
     });
 
     return childPlans.map((childPlan) => ({
