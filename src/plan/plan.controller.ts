@@ -13,6 +13,7 @@ import { PlanService } from './plan.service';
 import { Plan } from './plan.entity';
 import { CreatePlanDto } from '../request/create-plan.dto';
 import { UpdateParentPlanDto } from '../request/update-parent-plan.dto';
+import { UpdateChildPlanDto } from '../request/update-child-plan.dto';
 
 @Controller('plan')
 export class PlanController {
@@ -23,9 +24,14 @@ export class PlanController {
     await this.planService.createPlan(data);
   }
 
-  @Put()
+  @Put('/parent')
   async updateParentPlan(@Body() request: UpdateParentPlanDto): Promise<Plan> {
     return await this.planService.updateParentPlan(request);
+  }
+
+  @Put('/child')
+  async updateChilePlan(@Body() request: UpdateChildPlanDto): Promise<void> {
+    return await this.planService.updateChildPlan(request);
   }
 
   @Get('/all')

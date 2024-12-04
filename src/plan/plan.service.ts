@@ -8,6 +8,7 @@ import { Plan } from './plan.entity';
 import { Between, IsNull, Not, Repository } from 'typeorm';
 import { CreatePlanDto } from '../request/create-plan.dto';
 import { UpdateParentPlanDto } from '../request/update-parent-plan.dto';
+import { UpdateChildPlanDto } from '../request/update-child-plan.dto';
 
 @Injectable()
 export class PlanService {
@@ -56,6 +57,38 @@ export class PlanService {
     }
 
     return updatedPlan;
+  }
+
+  async updateChildPlan(request: UpdateChildPlanDto): Promise<void> {
+    const childPlan = await this.planRepository.findOne({
+      where: { id: request.id },
+      relations: ['parentPlan'],
+    });
+
+    if (!childPlan) {
+      throw new NotFoundException(
+        `ID ${request.id}의 플랜을 찾을 수 없습니다.`,
+      );
+    }
+
+    const parentPlan = await this.planRepository.findOne({
+      where: { id: request.parent },
+    });
+
+    if (!parentPlan) {
+      throw new NotFoundException(
+        `ID ${request.parent}의 부모 플랜을 찾을 수 없습니다.`,
+      );
+    }
+
+    childPlan.parentPlan = parentPlan;
+    childPlan.color = parentPlan.color;
+    childPlan.title = request.title;
+    if (request.text) {
+      childPlan.text = request.text;
+    }
+
+    await this.planRepository.save(childPlan);
   }
 
   async findAllPlans(): Promise<Plan[]> {
