@@ -18,8 +18,8 @@ export class PlanController {
   constructor(private readonly planService: PlanService) {}
 
   @Post()
-  async createPlan(@Body() data: CreatePlanDto): Promise<Plan> {
-    return await this.planService.createPlan(data);
+  async createPlan(@Body() data: CreatePlanDto): Promise<void> {
+    await this.planService.createPlan(data);
   }
 
   @Put()
