@@ -5,7 +5,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Priority } from './priority.enum';
 
 @Entity()
 export class Plan {
@@ -26,9 +25,6 @@ export class Plan {
 
   @CreateDateColumn()
   created_at: Date;
-
-  @Column({ type: 'varchar', enum: Priority, nullable: false })
-  priority: Priority;
 
   @Column({ default: false })
   done: boolean;
