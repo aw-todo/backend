@@ -1,4 +1,4 @@
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateParentPlanDto {
@@ -25,6 +25,7 @@ export class UpdateParentPlanDto {
     example: '업데이트된 플랜 내용입니다.',
     required: false,
   })
+  @IsOptional()
   @IsString()
-  text: string;
+  text?: string;
 }

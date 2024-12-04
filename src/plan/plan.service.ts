@@ -43,7 +43,9 @@ export class PlanService {
 
     plan.color = request.color;
     plan.title = request.title;
-    plan.text = request.text;
+    if (request.text) {
+      plan.text = request.text;
+    }
 
     const updatedPlan = await this.planRepository.save(plan);
 
