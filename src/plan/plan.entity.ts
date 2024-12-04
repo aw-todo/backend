@@ -33,6 +33,9 @@ export class Plan {
   @Column({ default: false })
   done: boolean;
 
+  @Column({ type: 'varchar', nullable: false })
+  color: string;
+
   @ManyToOne(() => Plan, { nullable: true, onDelete: 'CASCADE' })
   parentPlan: Plan | null;
 }
