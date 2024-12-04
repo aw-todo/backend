@@ -9,6 +9,8 @@ import { Between, IsNull, Not, Repository } from 'typeorm';
 import { CreatePlanDto } from '../request/create-plan.dto';
 import { UpdateParentPlanDto } from '../request/update-parent-plan.dto';
 import { UpdateChildPlanDto } from '../request/update-child-plan.dto';
+import { ParentPlanWithStatsDto } from '../response/parent-plan-with-stats.dto';
+import { ChildPlanWithParentDto } from '../response/child-plan-with-parent.dto';
 
 @Injectable()
 export class PlanService {
@@ -124,10 +126,16 @@ export class PlanService {
           (child) => child.done,
         ).length;
         return {
-          ...parentPlan,
+          id: parentPlan.id,
+          title: parentPlan.title,
+          text: parentPlan.text,
+          startDate: parentPlan.startDate,
+          endDate: parentPlan.endDate,
+          done: parentPlan.done,
+          color: parentPlan.color,
           totalChildren: childPlans.length,
-          completedChildren,
-        };
+          completedChildren: completedChildren,
+        } as ParentPlanWithStatsDto;
       }),
     );
   }
@@ -135,8 +143,8 @@ export class PlanService {
   async findChildPlansByDateRange(
     startDate: Date,
     endDate: Date,
-  ): Promise<Plan[]> {
-    return await this.planRepository.find({
+  ): Promise<ChildPlanWithParentDto[]> {
+    const childPlans = await this.planRepository.find({
       where: {
         startDate: Between(startDate, endDate),
         parentPlan: Not(IsNull()),
@@ -144,6 +152,21 @@ export class PlanService {
       relations: ['parentPlan'],
       order: { startDate: 'ASC' },
     });
+
+    return childPlans.map((childPlan) => ({
+      id: childPlan.id,
+      title: childPlan.title,
+      text: childPlan.text,
+      startDate: childPlan.startDate,
+      endDate: childPlan.endDate,
+      done: childPlan.done,
+      color: childPlan.color,
+      parentPlan: {
+        id: childPlan.parentPlan.id,
+        title: childPlan.parentPlan.title,
+        color: childPlan.parentPlan.color,
+      },
+    }));
   }
 
   async toggleDone(id: number): Promise<void> {
