@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Plan } from './plan.entity';
 import { Between, IsNull, Not, Repository } from 'typeorm';
 import { CreatePlanDto } from '../request/create-plan.dto';
+import { UpdateParentPlanDto } from '../request/update-parent-plan.dto';
 
 @Injectable()
 export class PlanService {
@@ -31,22 +32,17 @@ export class PlanService {
     return await this.planRepository.save(newPlan);
   }
 
-  async updateParentPlan(data: {
-    id: number;
-    color: string;
-    title: string;
-    text: string;
-  }): Promise<Plan> {
+  async updateParentPlan(request: UpdateParentPlanDto): Promise<Plan> {
     const plan: Plan = await this.planRepository.findOne({
-      where: { id: data.id },
+      where: { id: request.id },
     });
     if (!plan) {
       throw new NotFoundException('해당 ID의 계획을 찾을 수 없습니다.');
     }
 
-    plan.color = data.color;
-    plan.title = data.title;
-    plan.text = data.text;
+    plan.color = request.color;
+    plan.title = request.title;
+    plan.text = request.text;
 
     return await this.planRepository.save(plan);
   }

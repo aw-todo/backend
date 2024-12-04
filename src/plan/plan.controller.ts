@@ -12,6 +12,7 @@ import {
 import { PlanService } from './plan.service';
 import { Plan } from './plan.entity';
 import { CreatePlanDto } from '../request/create-plan.dto';
+import { UpdateParentPlanDto } from '../request/update-parent-plan.dto';
 
 @Controller('plan')
 export class PlanController {
@@ -23,10 +24,8 @@ export class PlanController {
   }
 
   @Put()
-  async updateParentPlan(
-    @Body() data: { id: number; color: string; title: string; text: string },
-  ): Promise<Plan> {
-    return await this.planService.updateParentPlan(data);
+  async updateParentPlan(@Body() request: UpdateParentPlanDto): Promise<Plan> {
+    return await this.planService.updateParentPlan(request);
   }
 
   @Get('/all')
