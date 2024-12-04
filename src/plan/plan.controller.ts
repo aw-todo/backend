@@ -11,20 +11,15 @@ import {
 } from '@nestjs/common';
 import { PlanService } from './plan.service';
 import { Plan } from './plan.entity';
+import { CreatePlanDto } from '../request/create-plan.dto';
 
 @Controller('plan')
 export class PlanController {
   constructor(private readonly planService: PlanService) {}
 
   @Post()
-  async createPlan(@Body() body: any): Promise<Plan> {
-    const planData: any = {};
-
-    Object.keys(body).forEach((key) => {
-      planData[key] = body[key];
-    });
-
-    return await this.planService.createPlan(planData);
+  async createPlan(@Body() data: CreatePlanDto): Promise<Plan> {
+    return await this.planService.createPlan(data);
   }
 
   @Put()

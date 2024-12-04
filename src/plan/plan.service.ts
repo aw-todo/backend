@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Plan } from './plan.entity';
 import { Between, IsNull, Not, Repository } from 'typeorm';
+import { CreatePlanDto } from '../request/create-plan.dto';
 
 @Injectable()
 export class PlanService {
@@ -14,18 +15,16 @@ export class PlanService {
     private readonly planRepository: Repository<Plan>,
   ) {}
 
-  async createPlan(data: any): Promise<Plan> {
-    this.validateCreatePlanData(data);
-
-    const parentPlan: Plan = await this.findParentPlan(data);
+  async createPlan(request: CreatePlanDto): Promise<Plan> {
+    const parentPlan: Plan = await this.findParentPlan(request);
 
     const newPlan: Plan = this.planRepository.create({
-      title: data.title,
-      text: data.text || null,
-      startDate: new Date(data.startDate),
-      endDate: new Date(data.endDate),
-      done: data.done || false,
-      color: data.color,
+      title: request.title,
+      text: request.text || null,
+      startDate: new Date(request.startDate),
+      endDate: new Date(request.endDate),
+      done: request.done || false,
+      color: request.color,
       parentPlan: parentPlan,
     });
 
@@ -153,17 +152,11 @@ export class PlanService {
     await this.planRepository.save(parentPlan);
   }
 
-  private async validateCreatePlanData(data: any) {
-    if (!data.title || !data.startDate || !data.endDate || !data.color) {
-      throw new BadRequestException('필수 필드가 누락되었습니다.');
-    }
-  }
-
-  private async findParentPlan(data: any) {
+  private async findParentPlan(request: CreatePlanDto) {
     let parentPlan: Plan | null = null;
-    if (data.parentPlan) {
+    if (request.parentPlan) {
       parentPlan = await this.planRepository.findOne({
-        where: { id: data.parentPlan },
+        where: { id: request.parentPlan },
       });
       if (!parentPlan) {
         throw new BadRequestException('상위 계획이 존재하지 않습니다.');
