@@ -17,6 +17,7 @@ import { UpdateChildPlanDto } from '../request/update-child-plan.dto';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ParentPlanWithStatsDto } from '../response/parent-plan-with-stats.dto';
 import { ChildPlanWithParentDto } from '../response/child-plan-with-parent.dto';
+import { ToggleDoneDto } from '../request/toggle-done.dto';
 
 @Controller('plan')
 export class PlanController {
@@ -108,12 +109,12 @@ export class PlanController {
   }
 
   @Post('toggle-done')
-  async toggleDone(@Body() body: { id: number }): Promise<void> {
-    if (!body.id) {
+  async toggleDone(@Body() request: ToggleDoneDto): Promise<void> {
+    if (!request.id) {
       throw new BadRequestException('id는 필수입니다.');
     }
 
-    await this.planService.toggleDone(body.id);
+    await this.planService.toggleDone(request.id);
   }
 
   @Delete(':id')
